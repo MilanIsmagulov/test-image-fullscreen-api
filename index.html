@@ -41,10 +41,6 @@
     :fullscreen #exitButton {
       display: block;
     }
-
-    :fullscreen {
-      transition: all 0.3s ease-in-out;
-    }
   </style>
 </head>
 <body>
@@ -114,7 +110,7 @@
         }
         lastTouchTime = currentTime;
       });
-    }, 1000)
+    }, 10000)
 
     // Событие для отслеживания изменения полноэкранного режима
     document.addEventListener('fullscreenchange', () => {
