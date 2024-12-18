@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fullscreen Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    img {
+      width: 300px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    img:hover {
+      transform: scale(1.05);
+    }
+
+    #exitButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10000;
+      display: none; /* Скрыто по умолчанию */
+    }
+
+    #exitButton:hover {
+      background-color: darkred;
+    }
+
+    /* Показываем кнопку в полноэкранном режиме */
+    :fullscreen #exitButton {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Нажмите на изображение для полноэкранного режима</h1>
+  <img src="15_10_1.png" alt="Example" id="image" />
+
+  <button id="exitButton">Выйти из полноэкранного режима</button>
+
+  <script>
+    const image = document.getElementById('image');
+    const exitButton = document.getElementById('exitButton');
+
+    // Функция для перехода в полноэкранный режим
+    image.addEventListener('click', () => {
+      if (image.requestFullscreen) {
+        image.requestFullscreen();
+      } else if (image.webkitRequestFullscreen) {
+        image.webkitRequestFullscreen();
+      } else if (image.msRequestFullscreen) {
+        image.msRequestFullscreen();
+      }
+    });
+
+    // Функция для выхода из полноэкранного режима через кнопку
+    exitButton.addEventListener('click', () => {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    });
+
+    // Обработчик двойного клика для выхода из полноэкранного режима
+    document.addEventListener('dblclick', () => {
+      if (document.fullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    });
+
+    // Переменные для отслеживания двойного тапа
+    let lastTouch = 0;
+    const DOUBLE_TAP_TIMEOUT = 300; // Максимальное время для двойного тапа
+
+    // Обработчик для сенсорных устройств
+    document.addEventListener('touchstart', (event) => {
+      const now = Date.now();
+      if (now - lastTouch <= DOUBLE_TAP_TIMEOUT) {
+        // Это двойной тап
+        if (document.fullscreenElement) {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+          }
+        }
+      }
+      lastTouch = now;
+    });
+
+    // Событие для отслеживания изменения полноэкранного режима
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        exitButton.style.display = 'block'; // Показываем кнопку в полноэкранном режиме
+      } else {
+        exitButton.style.display = 'none';  // Скрываем кнопку, когда выходим из полноэкранного режима
+      }
+    });
+  </script>
+</body>
+</html>
