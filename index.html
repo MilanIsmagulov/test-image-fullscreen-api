@@ -41,11 +41,15 @@
     :fullscreen #exitButton {
       display: block;
     }
+
+    :fullscreen {
+      transition: all 0.3s ease-in-out;
+    }
   </style>
 </head>
 <body>
   <h1>Нажмите на изображение для полноэкранного режима</h1>
-  <img src="15_10_1.png" alt="Example" id="image" />
+  <div style="text-align: center;"><img src="15_10_1.png" alt="Example" id="image" /></div>
 
   <button id="exitButton">Выйти из полноэкранного режима</button>
 
@@ -54,7 +58,7 @@
     const exitButton = document.getElementById('exitButton');
 
     // Функция для перехода в полноэкранный режим
-    image.addEventListener('click', () => {
+    image.addEventListener('dblclick', () => {
       if (image.requestFullscreen) {
         image.requestFullscreen();
       } else if (image.webkitRequestFullscreen) {
@@ -65,7 +69,7 @@
     });
 
     // Функция для выхода из полноэкранного режима через кнопку
-    exitButton.addEventListener('click', () => {
+    exitButton.addEventListener('dblclick', () => {
       if (document.exitFullscreen) {
         document.exitFullscreen();
       } else if (document.webkitExitFullscreen) {
@@ -88,27 +92,29 @@
       }
     });
 
-    // Переменные для отслеживания двойного тапа
-    let lastTouch = 0;
-    const DOUBLE_TAP_TIMEOUT = 300; // Максимальное время для двойного тапа
+    // Переменные для отслеживания времени последнего касания
+    let lastTouchTime = 0;
+    const DOUBLE_TAP_TIMEOUT = 300; // Максимальное время между тапами для двойного тапа
 
-    // Обработчик для сенсорных устройств
-    document.addEventListener('touchstart', (event) => {
-      const now = Date.now();
-      if (now - lastTouch <= DOUBLE_TAP_TIMEOUT) {
-        // Это двойной тап
-        if (document.fullscreenElement) {
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
+    setTimeout(()=>{
+      // Обработчик для сенсорных устройств
+      document.addEventListener('touchstart', (event) => {
+        const currentTime = Date.now();
+        if (currentTime - lastTouchTime <= DOUBLE_TAP_TIMEOUT) {
+          // Это двойной тап
+          if (document.fullscreenElement) {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+            }
           }
         }
-      }
-      lastTouch = now;
-    });
+        lastTouchTime = currentTime;
+      });
+    }, 1000)
 
     // Событие для отслеживания изменения полноэкранного режима
     document.addEventListener('fullscreenchange', () => {
